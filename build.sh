@@ -1,1 +1,1 @@
-moonc -o init.lua chain.moon
+moonc -o init.lua show.moon
