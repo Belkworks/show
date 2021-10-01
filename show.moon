@@ -25,6 +25,7 @@ class Visual
 
     startRenderLoop: =>
         return if @Rendering
+        return unless @update
         @Rendering = true
         @GUID = GUID!
         RunService\BindToRenderStep GUID, 199, -> @update!
@@ -55,7 +56,6 @@ class Visual
         @stopRenderLoop!
         @destroy!
 
-    update: =>
     destroy: =>
 
 import rad, sin, cos, atan2, pi from math
