@@ -178,4 +178,18 @@ class Visual.Vector2 extends Visual
     destroy: =>
         @Object\Remove!
 
+class Visual.Vector3 extends Visual.Vector2
+    move: =>
+
+    update: =>
+        C = @Camera
+        Point3, PointVisible = W2S C, @Point
+        with @Object
+            .Visible = PointVisible
+            if PointVisible
+                Point2 = V3V2 Point3
+                .Position = if @Shape == 'Circle'
+                    Point2
+                else Point2 - @Offset
+
 Visual
