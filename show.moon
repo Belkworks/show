@@ -20,6 +20,7 @@ class Visual
     new: (...) =>
         @Camera = workspace.CurrentCamera
         @init ... if @init
+        @openMutex!
         @startRenderLoop!
 
     startRenderLoop: =>
