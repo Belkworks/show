@@ -64,9 +64,6 @@ angle = (dir, ang) ->
     ang = rad ang
     V2 (cos(ang)*dir.X - sin(ang)*dir.Y), sin(ang)*dir.X + cos(ang)*dir.Y
 
-flip = (v2) ->
-    V2 1920 - v2.x, 1080 - v2.y
-
 Correct = (CFrame.Angles 0, (rad 89.9), 0)\vectorToWorldSpace V3 0, 0, -1/10
 
 class Visual.Ray extends Visual
