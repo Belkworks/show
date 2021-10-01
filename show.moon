@@ -146,4 +146,36 @@ class Visual.Ray extends Visual
         if @Arrows
             A\Remove! for A in *@Arrows
 
+class Visual.Vector2 extends Visual
+    init: (@Point, @Options = {}) =>
+        color = @Options.color or Color3.new 1, 1, 1
+        opacity = @Options.opacity or 1
+        @Radius = @Options.radius or 5
+        Diameter = @Radius * 2
+        @Shape = (@Options.box and 'Square') or 'Circle'
+        @Object = with Drawing.new @Shape
+            .Thickness = 1
+            .Transparency = opacity
+            .Color = color
+            .Visible = true
+            .Filled = false
+            if @Shape == 'Circle'
+                .Radius = @Radius
+            else
+                .Size = V2 Diameter, Diameter
+                @Offset = V2 @Radius, @Radius
+
+        @move!
+
+    update: false
+    move: =>
+        @Object.Position = if @Shape == 'Circle'
+            @Point
+        else @Point - @Offset
+
+    setPosition: (@Point) => @move!
+
+    destroy: =>
+        @Object\Remove!
+
 Visual
