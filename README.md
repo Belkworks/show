@@ -6,6 +6,7 @@
 ```lua
 Show = NEON:github('belkworks', 'show')
 ```
+Compatible with [Broom](https://github.com/Belkworks/broom).
 
 ## API
 
@@ -13,6 +14,20 @@ Show = NEON:github('belkworks', 'show')
 - `color` - Color of object (`Color3  = white`)
 - `opacity` - Inverse of transparency (`Float 0-1 = 1`)
 - `mutex` - Deletes other objects with same mutex (`String`)
+
+### Global Methods
+
+**expire**: `Visual:expire(time) -> nil`  
+Destroys `Visual` in `time` seconds.
+```lua
+V:expire(4)
+```
+
+**Destroy**: `Visual:Destroy() -> nil`  
+Destroys `Visual`.  
+```lua
+V:Destroy()
+```
 
 ## Rays
 
@@ -59,5 +74,15 @@ V:setPosition(Vector3.new(10, 80, 90))
 ```
 
 ### Options
-`box` - Render the point as a box (`Boolean = false`)
-`radius` - Radius of the display (`Number = 5`)
+- `box` - Render the point as a box (`Boolean = false`)
+- `radius` - Radius of the display (`Number = 5`)
+
+## Usage with [Broom](https://github.com/Belkworks/broom)
+
+```lua
+B = Broom()
+V = Show.Vector2(Vector2.new(100, 200))
+B:give(V)
+-- later
+B:clean() -- V is destroyed
+```
