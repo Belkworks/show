@@ -123,23 +123,22 @@ class Visual.Ray extends Visual
 
         if @Circle
             with @Circle
+                .Visible = OriginVisible
                 if OriginVisible
                     .Position = Origin2
-                    .Visible = true
-                else .Visible = false
 
         if @Arrows
             Dir = (Termination2 - Origin2).unit * 10
 
             for A in *@Arrows
                 with A
+                    .Visible = TerminationVisible
                     if TerminationVisible
                         .From = Termination2
-                        .Visible = true
-                    else .Visible = false
 
-            @Arrows[1].To = Termination2 - angle Dir, 20
-            @Arrows[2].To = Termination2 - angle Dir, -20
+            if TerminationVisible
+                @Arrows[1].To = Termination2 - angle Dir, 20
+                @Arrows[2].To = Termination2 - angle Dir, -20
         
     destroy: =>
         @Line\Remove!
