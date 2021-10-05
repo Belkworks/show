@@ -38,6 +38,12 @@ class Visual
     expire: (Time) =>
         delay Time, -> @Destroy!
 
+    setVisible: (Visible = true) =>
+        if Visible
+            @startRenderLoop!
+        else @stopRenderLoop!
+        @visible Visible
+
     openMutex: =>
         if Mutex = @Options.mutex
             if Old = MUTEX[Mutex]
@@ -57,6 +63,7 @@ class Visual
         @destroy!
 
     destroy: =>
+    visible: =>
 
 import rad, sin, cos, atan2, pi from math
 
@@ -143,6 +150,14 @@ class Visual.Ray extends Visual
             if TerminationVisible
                 @Arrows[1].To = Termination2 - angle Dir, 20
                 @Arrows[2].To = Termination2 - angle Dir, -20
+
+    visible: (Visible) =>
+        unless Visible
+            @Line.Visible = false
+            @Circle.Visible = false if @Circle
+            if @Arrows
+                for A in *@Arrows
+                    A.Visible = false
         
     destroy: =>
         @Line\Remove!
@@ -172,6 +187,8 @@ class Visual.Vector2 extends Visual
         @move!
 
     update: false
+    visible: (Visible) => @Object.Visible = Visible
+
     move: =>
         @Object.Position = if @Shape == 'Circle'
             @Point

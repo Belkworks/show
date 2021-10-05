@@ -47,6 +47,17 @@ do
         return self:Destroy()
       end)
     end,
+    setVisible = function(self, Visible)
+      if Visible == nil then
+        Visible = true
+      end
+      if Visible then
+        self:startRenderLoop()
+      else
+        self:stopRenderLoop()
+      end
+      return self:visible(Visible)
+    end,
     openMutex = function(self)
       do
         local Mutex = self.Options.mutex
@@ -78,7 +89,8 @@ do
       self:stopRenderLoop()
       return self:destroy()
     end,
-    destroy = function(self) end
+    destroy = function(self) end,
+    visible = function(self) end
   }
   _base_0.__index = _base_0
   _class_0 = setmetatable({
@@ -218,6 +230,21 @@ do
         end
       end
     end,
+    visible = function(self, Visible)
+      if not (Visible) then
+        self.Line.Visible = false
+        if self.Circle then
+          self.Circle.Visible = false
+        end
+        if self.Arrows then
+          local _list_0 = self.Arrows
+          for _index_0 = 1, #_list_0 do
+            local A = _list_0[_index_0]
+            A.Visible = false
+          end
+        end
+      end
+    end,
     destroy = function(self)
       self.Line:Remove()
       if self.Circle then
@@ -297,6 +324,9 @@ do
       return self:move()
     end,
     update = false,
+    visible = function(self, Visible)
+      self.Object.Visible = Visible
+    end,
     move = function(self)
       if self.Shape == 'Circle' then
         self.Object.Position = self.Point
