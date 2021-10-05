@@ -164,6 +164,10 @@ do
         end
       end
     end,
+    setRay = function(self, Ray)
+      self.Origin = Ray.Origin
+      self.Termination = self.Origin + Ray.Direction
+    end,
     update = function(self)
       local C = self.Camera
       local Origin3, OriginVisible = W2S(C, self.Origin)

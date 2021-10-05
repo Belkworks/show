@@ -97,6 +97,10 @@ class Visual.Ray extends Visual
                     .Visible = true
                     .Color = color
 
+    setRay: (Ray) =>
+        @Origin = Ray.Origin
+        @Termination = @Origin + Ray.Direction
+
     update: =>
         C = @Camera
         Origin3, OriginVisible = W2S C, @Origin
