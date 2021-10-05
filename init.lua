@@ -26,6 +26,9 @@ do
       if self.Rendering then
         return 
       end
+      if not (self.update) then
+        return 
+      end
       self.Rendering = true
       self.GUID = GUID()
       return RunService:BindToRenderStep(GUID, 199, function()
@@ -75,7 +78,6 @@ do
       self:stopRenderLoop()
       return self:destroy()
     end,
-    update = function(self) end,
     destroy = function(self) end
   }
   _base_0.__index = _base_0
@@ -85,6 +87,7 @@ do
       if self.init then
         self:init(...)
       end
+      self:openMutex()
       return self:startRenderLoop()
     end,
     __base = _base_0,
@@ -109,10 +112,6 @@ local angle
 angle = function(dir, ang)
   ang = rad(ang)
   return V2((cos(ang) * dir.X - sin(ang) * dir.Y), sin(ang) * dir.X + cos(ang) * dir.Y)
-end
-local flip
-flip = function(v2)
-  return V2(1920 - v2.x, 1080 - v2.y)
 end
 local Correct = (CFrame.Angles(0, (rad(89.9)), 0)):vectorToWorldSpace(V3(0, 0, -1 / 10))
 do
@@ -191,11 +190,9 @@ do
       if self.Circle then
         do
           local _with_0 = self.Circle
+          _with_0.Visible = OriginVisible
           if OriginVisible then
             _with_0.Position = Origin2
-            _with_0.Visible = true
-          else
-            _with_0.Visible = false
           end
         end
       end
@@ -205,16 +202,16 @@ do
         for _index_0 = 1, #_list_0 do
           local A = _list_0[_index_0]
           do
+            A.Visible = TerminationVisible
             if TerminationVisible then
               A.From = Termination2
-              A.Visible = true
-            else
-              A.Visible = false
             end
           end
         end
-        self.Arrows[1].To = Termination2 - angle(Dir, 20)
-        self.Arrows[2].To = Termination2 - angle(Dir, -20)
+        if TerminationVisible then
+          self.Arrows[1].To = Termination2 - angle(Dir, 20)
+          self.Arrows[2].To = Termination2 - angle(Dir, -20)
+        end
       end
     end,
     destroy = function(self)
@@ -263,5 +260,141 @@ do
     _parent_0.__inherited(_parent_0, _class_0)
   end
   Visual.Ray = _class_0
+end
+do
+  local _class_0
+  local _parent_0 = Visual
+  local _base_0 = {
+    init = function(self, Point, Options)
+      if Options == nil then
+        Options = { }
+      end
+      self.Point, self.Options = Point, Options
+      local color = self.Options.color or Color3.new(1, 1, 1)
+      local opacity = self.Options.opacity or 1
+      self.Radius = self.Options.radius or 5
+      local Diameter = self.Radius * 2
+      self.Shape = (self.Options.box and 'Square') or 'Circle'
+      do
+        local _with_0 = Drawing.new(self.Shape)
+        _with_0.Thickness = 1
+        _with_0.Transparency = opacity
+        _with_0.Color = color
+        _with_0.Visible = true
+        _with_0.Filled = false
+        if self.Shape == 'Circle' then
+          _with_0.Radius = self.Radius
+        else
+          _with_0.Size = V2(Diameter, Diameter)
+          self.Offset = V2(self.Radius, self.Radius)
+        end
+        self.Object = _with_0
+      end
+      return self:move()
+    end,
+    update = false,
+    move = function(self)
+      if self.Shape == 'Circle' then
+        self.Object.Position = self.Point
+      else
+        self.Object.Position = self.Point - self.Offset
+      end
+    end,
+    setPosition = function(self, Point)
+      self.Point = Point
+      return self:move()
+    end,
+    destroy = function(self)
+      return self.Object:Remove()
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, ...)
+      return _class_0.__parent.__init(self, ...)
+    end,
+    __base = _base_0,
+    __name = "Vector2",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Visual.Vector2 = _class_0
+end
+do
+  local _class_0
+  local _parent_0 = Visual.Vector2
+  local _base_0 = {
+    move = function(self) end,
+    update = function(self)
+      local C = self.Camera
+      local Point3, PointVisible = W2S(C, self.Point)
+      do
+        local _with_0 = self.Object
+        _with_0.Visible = PointVisible
+        if PointVisible then
+          local Point2 = V3V2(Point3)
+          if self.Shape == 'Circle' then
+            _with_0.Position = Point2
+          else
+            _with_0.Position = Point2 - self.Offset
+          end
+        end
+        return _with_0
+      end
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, ...)
+      return _class_0.__parent.__init(self, ...)
+    end,
+    __base = _base_0,
+    __name = "Vector3",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Visual.Vector3 = _class_0
 end
 return Visual
