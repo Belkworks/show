@@ -31,7 +31,7 @@ do
       end
       self.Rendering = true
       self.GUID = GUID()
-      return RunService:BindToRenderStep(GUID, 199, function()
+      return RunService:BindToRenderStep(self.GUID, 199, function()
         return self:update()
       end)
     end,
@@ -40,7 +40,7 @@ do
         return 
       end
       self.Rendering = false
-      return RunService:UnbindFromRenderStep(GUID)
+      return RunService:UnbindFromRenderStep(self.GUID)
     end,
     expire = function(self, Time)
       return delay(Time, function()

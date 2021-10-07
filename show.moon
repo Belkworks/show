@@ -28,12 +28,12 @@ class Visual
         return unless @update
         @Rendering = true
         @GUID = GUID!
-        RunService\BindToRenderStep GUID, 199, -> @update!
+        RunService\BindToRenderStep @GUID, 199, -> @update!
 
     stopRenderLoop: =>
         return unless @Rendering
         @Rendering = false
-        RunService\UnbindFromRenderStep GUID
+        RunService\UnbindFromRenderStep @GUID
 
     expire: (Time) =>
         delay Time, -> @Destroy!
