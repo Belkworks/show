@@ -36,7 +36,7 @@ Create a display on `Ray` with `Options`
 ```lua
 R = Show.Ray(Ray, {
 	color = Color3.new(1,0,0)
-}
+})
 ```
 
 ### Options
@@ -52,7 +52,7 @@ Creates a display on `Vector2` with `Options`
 V = Show.Vector2(Vector2.new(200, 100), {
 	mutex = 'howdy',
 	radius = 20
-}
+})
 ```
 
 **Vector3**: `Show.Vector3(Vector3, Options?) -> Vector3`  
@@ -60,7 +60,7 @@ Creates a display on `Vector3` with `Options`
 ```lua
 V = Show.Vector3(Vector3.new(20, 80, 20), {
 	box = true
-}
+})
 ```
 
 ### Methods
