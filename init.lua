@@ -99,6 +99,7 @@ do
       if self.init then
         self:init(...)
       end
+      self.Options = self.Options or { }
       self:openMutex()
       return self:startRenderLoop()
     end,
