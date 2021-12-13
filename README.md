@@ -114,3 +114,9 @@ B:give(V)
 -- later
 B:clean() -- V is destroyed
 ```
+
+You can also pass `Show` itself to broom to destroy all visuals.
+```lua
+B = Broom()
+B:give(Show)
+```
