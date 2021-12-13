@@ -18,30 +18,33 @@ SHOW.STOP! if SHOW
 SHOW = SHOW or {}
 SHOW.MUTEX or= {}
 SHOW.OBJECTS or= {}
+SHOW.RENDERING or= {}
 SHOW.GUID = 'SHOW_RENDER_' .. GUID!
 getgenv!.SHOW = SHOW
 
 MUTEX = SHOW.MUTEX
 OBJECTS = SHOW.OBJECTS
+RENDERING = SHOW.RENDERING
 
 renderLoop = ->
-    for guid, visual in pairs OBJECTS
+    for guid, visual in pairs RENDERING
         visual\update!
 
 Rendering = false
 startRenderLoop = ->
     return if Rendering
     Rendering = true
-    RunService\BindToRenderStep GUID, 199, renderLoop
+    RunService\BindToRenderStep SHOW.GUID, 199, renderLoop
 
 stopRenderLoop = ->
     return unless Rendering
     Rendering = false
-    RunService\UnbindFromRenderStep GUID
+    RunService\UnbindFromRenderStep SHOW.GUID
 
-removeFromRendering = (GUID) ->
-    OBJECTS[GUID] = nil
-    unless pairs(OBJECTS) OBJECTS
+removeFromRendering = (id) ->
+    RENDERING[id] = nil
+    return unless Rendering
+    unless pairs(RENDERING) RENDERING
         stopRenderLoop!
 
 SHOW.STOP = stopRenderLoop
@@ -49,7 +52,11 @@ SHOW.STOP = stopRenderLoop
 class Visual
     @Destroy: ->
         SHOW.STOP!
+        for guid, visual in pairs SHOW.OBJECTS
+            visual\Destroy!
+
         SHOW.OBJECTS = {}
+        SHOW.RENDERING = {}
         SHOW.MUTEX = {}
 
     new: (...) =>
@@ -58,11 +65,12 @@ class Visual
         @Options or= {}
         @openMutex!
         @startRenderLoop!
+        @GUID = GUID!
+        OBJECTS[@GUID] = @
 
     startRenderLoop: =>
         return unless @update
-        @GUID = GUID!
-        OBJECTS[@GUID] = @
+        RENDERING[@GUID] = @
         startRenderLoop!
 
     stopRenderLoop: =>
@@ -265,7 +273,7 @@ class Visual.Text extends Visual.Vector3
             .Color = color
             .Visible = true
 
-        @setPosition Point
+        @setPosition Point -- TODO: Vector2 support
         @setText Text
 
     setText: (@Text) =>

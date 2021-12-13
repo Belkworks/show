@@ -22,13 +22,15 @@ end
 local SHOW = SHOW or { }
 SHOW.MUTEX = SHOW.MUTEX or { }
 SHOW.OBJECTS = SHOW.OBJECTS or { }
+SHOW.RENDERING = SHOW.RENDERING or { }
 SHOW.GUID = 'SHOW_RENDER_' .. GUID()
 getgenv().SHOW = SHOW
 local MUTEX = SHOW.MUTEX
 local OBJECTS = SHOW.OBJECTS
+local RENDERING = SHOW.RENDERING
 local renderLoop
 renderLoop = function()
-  for guid, visual in pairs(OBJECTS) do
+  for guid, visual in pairs(RENDERING) do
     visual:update()
   end
 end
@@ -39,7 +41,7 @@ startRenderLoop = function()
     return 
   end
   Rendering = true
-  return RunService:BindToRenderStep(GUID, 199, renderLoop)
+  return RunService:BindToRenderStep(SHOW.GUID, 199, renderLoop)
 end
 local stopRenderLoop
 stopRenderLoop = function()
@@ -47,12 +49,15 @@ stopRenderLoop = function()
     return 
   end
   Rendering = false
-  return RunService:UnbindFromRenderStep(GUID)
+  return RunService:UnbindFromRenderStep(SHOW.GUID)
 end
 local removeFromRendering
-removeFromRendering = function(GUID)
-  OBJECTS[GUID] = nil
-  if not (pairs(OBJECTS)(OBJECTS)) then
+removeFromRendering = function(id)
+  RENDERING[id] = nil
+  if not (Rendering) then
+    return 
+  end
+  if not (pairs(RENDERING)(RENDERING)) then
     return stopRenderLoop()
   end
 end
@@ -65,8 +70,7 @@ do
       if not (self.update) then
         return 
       end
-      self.GUID = GUID()
-      OBJECTS[self.GUID] = self
+      RENDERING[self.GUID] = self
       return startRenderLoop()
     end,
     stopRenderLoop = function(self)
@@ -134,7 +138,9 @@ do
       end
       self.Options = self.Options or { }
       self:openMutex()
-      return self:startRenderLoop()
+      self:startRenderLoop()
+      self.GUID = GUID()
+      OBJECTS[self.GUID] = self
     end,
     __base = _base_0,
     __name = "Visual"
@@ -150,7 +156,11 @@ do
   local self = _class_0
   self.Destroy = function()
     SHOW.STOP()
+    for guid, visual in pairs(SHOW.OBJECTS) do
+      visual:Destroy()
+    end
     SHOW.OBJECTS = { }
+    SHOW.RENDERING = { }
     SHOW.MUTEX = { }
   end
   Visual = _class_0
