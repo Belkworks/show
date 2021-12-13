@@ -138,9 +138,9 @@ do
       end
       self.Options = self.Options or { }
       self:openMutex()
-      self:startRenderLoop()
       self.GUID = GUID()
       OBJECTS[self.GUID] = self
+      return self:startRenderLoop()
     end,
     __base = _base_0,
     __name = "Visual"

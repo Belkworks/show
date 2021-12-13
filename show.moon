@@ -64,9 +64,9 @@ class Visual
         @init ... if @init
         @Options or= {}
         @openMutex!
-        @startRenderLoop!
         @GUID = GUID!
         OBJECTS[@GUID] = @
+        @startRenderLoop!
 
     startRenderLoop: =>
         return unless @update
