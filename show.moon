@@ -215,7 +215,7 @@ class Visual.Vector3 extends Visual.Vector2
                 else Point2 - @Offset
 
 class Visual.Text extends Visual.Vector3
-    init: (Text, @Options = {}) =>
+    init: (Text, Point, @Options = {}) =>
         color = @Options.color or Color3.new 1, 1, 1
         outline = @Options.outline or Color3.new!
         opacity = @Options.opacity or 1
@@ -232,7 +232,7 @@ class Visual.Text extends Visual.Vector3
             .Color = color
             .Visible = true
 
-        @setPosition @Options.position
+        @setPosition Point
         @setText Text
 
     setText: (@Text) =>

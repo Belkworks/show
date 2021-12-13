@@ -436,7 +436,7 @@ do
   local _class_0
   local _parent_0 = Visual.Vector3
   local _base_0 = {
-    init = function(self, Text, Options)
+    init = function(self, Text, Point, Options)
       if Options == nil then
         Options = { }
       end
@@ -459,7 +459,7 @@ do
         _with_0.Visible = true
         self.Object = _with_0
       end
-      self:setPosition(self.Options.position)
+      self:setPosition(Point)
       return self:setText(Text)
     end,
     setText = function(self, Text)
