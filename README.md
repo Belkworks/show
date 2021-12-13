@@ -88,8 +88,8 @@ V = Show.Text('Hello', Vector3.new(0, 100, 0), {
 ```
 
 ### Options
-- `font`: Font to render the text with `(Number = 13)`
-- `size`: Size of the text `(Font = Monospace)`
+- `font`: Font to render the text with `(Font = Monospace)`
+- `size`: Size of the text `(Number = 13)`
 - `center`: Whether or not to center the text `(Boolean = false)`
 - `outline`: Outline color `(Color3/Boolean = White)`
 
