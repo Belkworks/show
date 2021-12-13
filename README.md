@@ -77,6 +77,34 @@ V:setPosition(Vector3.new(10, 80, 90))
 - `box` - Render the point as a box (`Boolean = false`)
 - `radius` - Radius of the display (`Number = 5`)
 
+## Text
+
+**Text**: `Show.Text(String, Vector3, Options?) -> Text`  
+Creates a text display of `String` at `Vector3`
+```lua
+V = Show.Text('Hello', Vector3.new(0, 100, 0), {
+	size = 14
+})
+```
+
+### Options
+- `font`: Font to render the text with `(Number = 13)`
+- `size`: Size of the text `(Font = Monospace)`
+- `center`: Whether or not to center the text `(Boolean = false)`
+- `outline`: Outline color `(Color3/Boolean = White)`
+
+### Methods
+**setPosition**: `Text:setPosition(Vector3) -> nil`  
+Changes the current position of the Text.
+```lua
+V:setPosition(Vector3.new(10, 10, 10))
+```
+**setText**: `Text:setText(String) -> nil`  
+Changes the text displayed.
+```lua
+V:setText 'hello'
+```
+
 ## Usage with [Broom](https://github.com/Belkworks/broom)
 
 ```lua
