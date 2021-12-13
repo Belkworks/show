@@ -16,31 +16,64 @@ V3V2 = function(V)
   return V2(V.X, V.Y)
 end
 local W2S = workspace.CurrentCamera.WorldToViewportPoint
-local MUTEX = SHOW_MUTEX or { }
-getgenv().SHOW_MUTEX = MUTEX
+if SHOW then
+  SHOW.STOP()
+end
+local SHOW = SHOW or { }
+SHOW.MUTEX = SHOW.MUTEX or { }
+SHOW.OBJECTS = SHOW.OBJECTS or { }
+SHOW.GUID = 'SHOW_RENDER_' .. GUID()
+getgenv().SHOW = SHOW
+local MUTEX = SHOW.MUTEX
+local OBJECTS = SHOW.OBJECTS
+local renderLoop
+renderLoop = function()
+  for guid, visual in pairs(OBJECTS) do
+    visual:update()
+  end
+end
+local Rendering = false
+local startRenderLoop
+startRenderLoop = function()
+  if Rendering then
+    return 
+  end
+  Rendering = true
+  return RunService:BindToRenderStep(GUID, 199, renderLoop)
+end
+local stopRenderLoop
+stopRenderLoop = function()
+  if not (Rendering) then
+    return 
+  end
+  Rendering = false
+  return RunService:UnbindFromRenderStep(GUID)
+end
+local removeFromRendering
+removeFromRendering = function(GUID)
+  OBJECTS[GUID] = nil
+  if not (pairs(OBJECTS)(OBJECTS)) then
+    return stopRenderLoop()
+  end
+end
+SHOW.STOP = stopRenderLoop
 local Visual
 do
   local _class_0
   local _base_0 = {
     startRenderLoop = function(self)
-      if self.Rendering then
-        return 
-      end
       if not (self.update) then
         return 
       end
-      self.Rendering = true
       self.GUID = GUID()
-      return RunService:BindToRenderStep(self.GUID, 199, function()
-        return self:update()
-      end)
+      OBJECTS[self.GUID] = self
+      return startRenderLoop()
     end,
     stopRenderLoop = function(self)
-      if not (self.Rendering) then
+      if not (self.GUID) then
         return 
       end
-      self.Rendering = false
-      return RunService:UnbindFromRenderStep(self.GUID)
+      return removeFromRendering(self.GUID)
     end,
     expire = function(self, Time)
       return delay(Time, function()
@@ -114,6 +147,12 @@ do
     end
   })
   _base_0.__class = _class_0
+  local self = _class_0
+  self.Destroy = function()
+    SHOW.STOP()
+    SHOW.OBJECTS = { }
+    SHOW.MUTEX = { }
+  end
   Visual = _class_0
 end
 local rad, sin, cos, atan2, pi

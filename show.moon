@@ -13,10 +13,45 @@ V2 = Vector2.new
 V3V2 = (V) -> V2 V.X, V.Y
 W2S = workspace.CurrentCamera.WorldToViewportPoint
 
-MUTEX = SHOW_MUTEX or {}
-getgenv!.SHOW_MUTEX = MUTEX
+SHOW.STOP! if SHOW
 
+SHOW = SHOW or {}
+SHOW.MUTEX or= {}
+SHOW.OBJECTS or= {}
+SHOW.GUID = 'SHOW_RENDER_' .. GUID!
+getgenv!.SHOW = SHOW
+
+MUTEX = SHOW.MUTEX
+OBJECTS = SHOW.OBJECTS
+
+renderLoop = ->
+    for guid, visual in pairs OBJECTS
+        visual\update!
+
+Rendering = false
+startRenderLoop = ->
+    return if Rendering
+    Rendering = true
+    RunService\BindToRenderStep GUID, 199, renderLoop
+
+stopRenderLoop = ->
+    return unless Rendering
+    Rendering = false
+    RunService\UnbindFromRenderStep GUID
+
+removeFromRendering = (GUID) ->
+    OBJECTS[GUID] = nil
+    unless pairs(OBJECTS) OBJECTS
+        stopRenderLoop!
+
+SHOW.STOP = stopRenderLoop
+    
 class Visual
+    @Destroy: ->
+        SHOW.STOP!
+        SHOW.OBJECTS = {}
+        SHOW.MUTEX = {}
+
     new: (...) =>
         @Camera = workspace.CurrentCamera
         @init ... if @init
@@ -25,16 +60,14 @@ class Visual
         @startRenderLoop!
 
     startRenderLoop: =>
-        return if @Rendering
         return unless @update
-        @Rendering = true
         @GUID = GUID!
-        RunService\BindToRenderStep @GUID, 199, -> @update!
+        OBJECTS[@GUID] = @
+        startRenderLoop!
 
     stopRenderLoop: =>
-        return unless @Rendering
-        @Rendering = false
-        RunService\UnbindFromRenderStep @GUID
+        return unless @GUID
+        removeFromRendering @GUID
 
     expire: (Time) =>
         delay Time, -> @Destroy!
