@@ -214,4 +214,43 @@ class Visual.Vector3 extends Visual.Vector2
                     Point2
                 else Point2 - @Offset
 
+class Visual.Text extends Visual.Vector3
+    init: (Text, @Options = {}) =>
+        color = @Options.color or Color3.new 1, 1, 1
+        outline = @Options.outline or Color3.new!
+        opacity = @Options.opacity or 1
+        font = @Options.font or Drawing.Fonts.Monospace
+        size = @Options.size or 13
+
+        @Object = with Drawing.new 'Text'
+            .Font = font
+            .Size = size
+            .Transparency = opacity
+            .Outline = outline != false
+            if outline
+                .OutlineColor = outline
+            .Color = color
+            .Visible = true
+
+        @setPosition @Options.position
+        @setText Text
+
+    setText: (@Text) =>
+        @Object.Text = @Text
+        {:X, :Y} = @Object.TextBounds
+        XC = if @Options.center
+            X/2
+        else 0
+
+        @Offset = V2 XC, Y/2
+
+    update: =>
+        C = @Camera
+        Point3, PointVisible = W2S C, @Point
+        with @Object
+            .Visible = PointVisible
+            if PointVisible
+                Point2 = V3V2 Point3
+                .Position = Point2 - @Offset
+
 Visual

@@ -432,4 +432,97 @@ do
   end
   Visual.Vector3 = _class_0
 end
+do
+  local _class_0
+  local _parent_0 = Visual.Vector3
+  local _base_0 = {
+    init = function(self, Text, Options)
+      if Options == nil then
+        Options = { }
+      end
+      self.Options = Options
+      local color = self.Options.color or Color3.new(1, 1, 1)
+      local outline = self.Options.outline or Color3.new()
+      local opacity = self.Options.opacity or 1
+      local font = self.Options.font or Drawing.Fonts.Monospace
+      local size = self.Options.size or 13
+      do
+        local _with_0 = Drawing.new('Text')
+        _with_0.Font = font
+        _with_0.Size = size
+        _with_0.Transparency = opacity
+        _with_0.Outline = outline ~= false
+        if outline then
+          _with_0.OutlineColor = outline
+        end
+        _with_0.Color = color
+        _with_0.Visible = true
+        self.Object = _with_0
+      end
+      self:setPosition(self.Options.position)
+      return self:setText(Text)
+    end,
+    setText = function(self, Text)
+      self.Text = Text
+      self.Object.Text = self.Text
+      local X, Y
+      do
+        local _obj_0 = self.Object.TextBounds
+        X, Y = _obj_0.X, _obj_0.Y
+      end
+      local XC
+      if self.Options.center then
+        XC = X / 2
+      else
+        XC = 0
+      end
+      self.Offset = V2(XC, Y / 2)
+    end,
+    update = function(self)
+      local C = self.Camera
+      local Point3, PointVisible = W2S(C, self.Point)
+      do
+        local _with_0 = self.Object
+        _with_0.Visible = PointVisible
+        if PointVisible then
+          local Point2 = V3V2(Point3)
+          _with_0.Position = Point2 - self.Offset
+        end
+        return _with_0
+      end
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, ...)
+      return _class_0.__parent.__init(self, ...)
+    end,
+    __base = _base_0,
+    __name = "Text",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Visual.Text = _class_0
+end
 return Visual
